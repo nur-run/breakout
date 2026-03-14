@@ -1,4 +1,7 @@
-let mode = 0;
+// MODES VOOR VERSCHILLENDE SCHERMEN
+let mode = 0;   // mode gebruik ik voor verschillende schermen zoals; start, game-over en victory
+
+////////////
 
 // js objects gebruikt voor circle interactie
 let snelheid = {
@@ -27,7 +30,7 @@ let paddleX = 430;
 ////////////
 
 let cnv;    // canvas
-let numCircles = 1;
+const numCircles = 1;
 let i = 0;
 
 ////////////
@@ -35,6 +38,20 @@ let i = 0;
 let brickActive = [];
 let numRects = 7;
 let numRows = 4;
+
+
+////////////
+
+// IMAGE UPLOAD
+let img;
+let imgD = radius * 2;  //om img te centreren in de circle
+
+function preload() {
+    // laad de afbeelding in
+    img = loadImage('images/mia-hoofd.png');
+}
+
+////////////
 
 
 function setup() {
@@ -66,11 +83,12 @@ function setup() {
 function draw() {
 
     if (mode == 0) {
-        splashScreen();
+        startScreen();
     }
 
-    if (mode == 1) {
+    ////////////
 
+    if (mode == 1) {
 
         // KLEUR CANVAS
         background(54, 1, 63);
@@ -81,10 +99,12 @@ function draw() {
 
         // LOOP CIRCLE
         for (let moving = 0; moving < numCircles; moving++) {
-            fill("white");
+            image(img, circleMove.x[moving] - 40 /2, 
+                circleMove.y[moving] - 40 /2, 40, 40);
+            noFill();
+            noStroke();
             circle(circleMove.x[moving] += snelheid.x[moving], circleMove.y[moving] += snelheid.y[moving], radius);
         }
-
 
 
     ////////////
@@ -105,6 +125,7 @@ function draw() {
 
     ////////////
 
+
         // PADDLE BLIJFT IN CANVAS
         // paddle gaat nu niet uit de canvas
         if (paddleX < 0) {
@@ -116,9 +137,11 @@ function draw() {
         }
 
 
+
     ////////////
 
 
+        // CIRCLE & PADDLE BOTSING
         // paddle aanraking met circle
         let paddleLeft = paddleX;
         let paddleRight = paddleX + paddle.w;
@@ -129,8 +152,6 @@ function draw() {
         let circleX = circleMove.x[i]
         let circleY = circleMove.y[i]
 
-
-        // CIRCLE & PADDLE BOTSING
         // deze if statement zorgt voor een botsing met circle en paddle
         // radius-20 gedaan omdat de raius op 40 staat in de const
         if (circleX >= paddleLeft && 
@@ -141,6 +162,7 @@ function draw() {
         } 
 
         // PADDLE
+        fill(195, 177, 225);
         rect(paddleX, paddle.y, paddle.w, paddle.h);
 
 
@@ -148,10 +170,8 @@ function draw() {
 
 
         // BRICKS
-        
         let marginSide = 10                             //ruimte links en rechts van de buitenste blokjes
         let marginTop = 10;                             //hoe ver van de bovenkant
-    
         let brickHeight = 20;                           // hoogte van de blokje
 
         let cellWidth = (width - 2 * marginSide) / numRects;
@@ -214,7 +234,6 @@ function draw() {
         }
 
 
-
     ////////////
 
 
@@ -245,7 +264,6 @@ function draw() {
     if (mode == 3) {
         victoryScreen();
     }
-
 }
 
 
@@ -255,6 +273,7 @@ function resetButton() {
     textSize(50);
     text("Game Over!", 180, 240);
 
+    cursor(HAND);
     fill("black");
     rect(230, 300, 200, 50, 20);
 
@@ -273,7 +292,6 @@ function resetButton() {
         snelheid.y[i] = random(3, 6);
 
         resetBricks();
-
         mode = 0;
     }
 }
@@ -285,6 +303,7 @@ function victoryScreen() {
     textSize(50);
     text("VICTORY🤩", 190, 240);
 
+    cursor(HAND);
     fill("black");
     rect(230, 300, 200, 50, 20);
 
@@ -303,22 +322,18 @@ function victoryScreen() {
         snelheid.y[i] = random(3, 6);
 
         resetBricks();
-
         mode = 0;
     }
-
 }
 
 
-
-function splashScreen() {
-    background(0, 0, 0); //zwart achtergrond
-    fill(255, 0, 0);     //rood
+function startScreen() {
+    background(0, 0, 0); 
+    fill(172, 133, 235);     
     textSize(60);
     text('Mia Breakout', 150, 150);
-    fill(255, 250, 0);      //geel
-    textSize(20);
     
+    cursor(HAND);
     fill("yellow");
     rect(230, 300, 200, 50, 20);
 
@@ -330,12 +345,11 @@ function splashScreen() {
         //did i click my mouse
         mode = 1; //start game
     }
-
 }
 
 
 function resetBricks() {
-
+    // laad alle bricks opniew in wanneer je op reset button klikt
     for(let row = 0; row < numRows; row++) {
         for(let col = 0; col < numRects; col++) {
             brickActive[row][col] = true;
@@ -345,5 +359,5 @@ function resetBricks() {
 
 
 function updatemode() {
-  mode = mode + 1;
+  mode += 1;
 }
